@@ -14,7 +14,7 @@ class ProjectHelper:
 
     def fill_reauth_form(self):
         wd = self.app.wd
-        if len(wd.find_elements_by_name("reauth_form"))>0:
+        if len(wd.find_elements_by_name("reauth_form")) > 0:
             wd.find_element_by_name("password").clear()
             wd.find_element_by_name("password").send_keys("root")
             wd.find_element_by_xpath("//input[@value='Login']").click()
@@ -56,7 +56,6 @@ class ProjectHelper:
         self.fill_reauth_form()
         self.fill_project_data(project)
         wd.find_element_by_xpath("//input[@value='Add Project']").click()
-        # тут: если проект с таким именем уже есть (ошибка) удаляем сначала этот проект, а потом -создаем
         self.project_cache = None
 
     def fill_project_data(self, project):
@@ -68,7 +67,7 @@ class ProjectHelper:
         wd = self.app.wd
         self.open_manage_projects_page()
         return int(len(wd.find_elements_by_xpath("//a[contains(@href,'?project_id=')]//ancestor::tr")))
-    group_cache = None
+    project_cache = None
 
     def delete_project_by_id(self, id):
         wd = self.app.wd
@@ -78,10 +77,24 @@ class ProjectHelper:
         # confirmation
         wd.find_element_by_xpath("//input[@value='Delete Project']").click()
         # self.return_to_manage_projects_page()
-        self.group_cache = None
+        self.project_cache = None
+
+    def delete_project_by_name(self, name):
+        wd = self.app.wd
+        self.open_manage_projects_page()
+        self.select_project_by_name(name)
+        wd.find_element_by_xpath("//input[@value='Delete Project']").click()
+        # confirmation
+        wd.find_element_by_xpath("//input[@value='Delete Project']").click()
+        # self.return_to_manage_projects_page()
+        self.project_cache = None
+
+    def select_project_by_name(self, name):
+        wd = self.app.wd
+        wd.find_element_by_xpath("//a[text()='" + name + "']").click()
+        self.fill_reauth_form()
 
     def select_project_by_id(self, id):
         wd = self.app.wd
-        wd.find_element_by_xpath("//a[contains(@href,'?project_id="+id+"')]").click()
+        wd.find_element_by_xpath("//a[contains(@href,'?project_id=" + id + "')]").click()
         self.fill_reauth_form()
-
