@@ -10,4 +10,7 @@ def test_del_project(app):
     project = random.choice(projects_before)
     app.project.delete_project_by_id(project.id)
     assert len(projects_before) - 1 == app.project.amount()
+    projects_after = app.project.get_project_list()
+    projects_before.remove(project)
+    assert projects_before == projects_after
 

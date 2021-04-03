@@ -7,8 +7,6 @@ import re
 import getopt
 import sys
 
-
-
 try:
     opts, args = getopt.getopt(sys.argv[1:], "n:f:", ["number of projects", "file"])
 except getopt.GetoptError as err:
@@ -18,12 +16,12 @@ except getopt.GetoptError as err:
 n = 5
 f = "data/projects.json"
 
-# if parameters n/f specified
 for o, a in opts:
     if o == "-n":
         n = int(a)
     elif o == "-f":
         f = a
+
 
 def random_string(prefix, maxlen):
     symbols = string.ascii_letters + string.digits + string.punctuation + " " * 10
@@ -31,14 +29,17 @@ def random_string(prefix, maxlen):
     return prefix + "".join([random.choice(clear_symbols) for i in range(random.randrange(maxlen))])
 
 
+st = ['development', 'release', 'stable', 'obsolete']
+v_st = ['public', 'private']
+
 project_testdata = [
-    Project(name=random_string("projectname", 10), description=random_string("desc", 15))
+    Project(name=random_string("projectname", 10), description=random_string("desc", 25), status=random.choice(st),
+            view_status=random.choice(v_st))
     for i in range(n)
 ]
 
 file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", f)
 
-# open this file
 with open(file, "w") as out:
     jsonpickle.set_encoder_options("json", indent=2)
     out.write(jsonpickle.encode(project_testdata))

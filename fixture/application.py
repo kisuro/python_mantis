@@ -2,11 +2,8 @@
 
 from selenium import webdriver
 from selenium.webdriver.support.select import Select
-
 from fixture.project import ProjectHelper
 from fixture.session import SessionHelper
-# from fixture.group import GroupHelper
-# from fixture.contact import ContactHelper
 
 
 class Application:
@@ -40,10 +37,17 @@ class Application:
         except:
             return False
 
-    # navigation method(s)
+
     def open_home_page(self):
         wd = self.wd
         wd.get(self.base_url)
+
+    def select_value_in_dropdown(self, select_name, value):
+        wd = self.wd
+        if value is not None:
+            dropdown_el = wd.find_element_by_name(select_name)
+            dropdown_el.click()
+            dropdown_el.find_element_by_xpath(".//option[contains(text(),'" + value + "')]").click()
 
     def change_field_value(self, field_name, text):
         wd = self.wd

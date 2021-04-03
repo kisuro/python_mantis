@@ -61,6 +61,8 @@ class ProjectHelper:
     def fill_project_data(self, project):
         self.app.change_field_value("name", project.name)
         self.app.change_field_value("description", project.description)
+        self.app.select_value_in_dropdown("status", project.status)
+        self.app.select_value_in_dropdown("view_state", project.view_status)
         # можно также заполнять/менять статус и тд из выпадающих, все по аналогии...
 
     def amount(self):
@@ -70,19 +72,17 @@ class ProjectHelper:
     project_cache = None
 
     def delete_project_by_id(self, id):
-        wd = self.app.wd
         self.open_manage_projects_page()
         self.select_project_by_id(id)
-        wd.find_element_by_xpath("//input[@value='Delete Project']").click()
-        # confirmation
-        wd.find_element_by_xpath("//input[@value='Delete Project']").click()
-        # self.return_to_manage_projects_page()
-        self.project_cache = None
+        self.del_proj_and_confirm()
 
     def delete_project_by_name(self, name):
-        wd = self.app.wd
         self.open_manage_projects_page()
         self.select_project_by_name(name)
+        self.del_proj_and_confirm()
+
+    def del_proj_and_confirm(self):
+        wd = self.app.wd
         wd.find_element_by_xpath("//input[@value='Delete Project']").click()
         # confirmation
         wd.find_element_by_xpath("//input[@value='Delete Project']").click()
