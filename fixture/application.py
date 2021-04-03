@@ -7,8 +7,7 @@ from fixture.session import SessionHelper
 
 
 class Application:
-    def __init__(self, browser, base_url):
-        # init driver
+    def __init__(self, browser, base_url, pwd):
         if browser == "firefox":
             self.wd = webdriver.Firefox(executable_path='C:/webdrivers/ffdriver/geckodriver.exe')
         elif browser == "chrome":
@@ -20,14 +19,12 @@ class Application:
         else:
             raise ValueError("Unrecognized browser %s", browser)
 
-        # self.wd.implicitly_wait(20)
-        # init our helpers
         self.session = SessionHelper(self)
         self.project = ProjectHelper(self)
         self.base_url = base_url
+        self.pwd = pwd
 
     def destroy(self):
-        # close driver
         self.wd.quit()
 
     def is_valid(self):
@@ -36,7 +33,6 @@ class Application:
             return True
         except:
             return False
-
 
     def open_home_page(self):
         wd = self.wd
@@ -62,3 +58,10 @@ class Application:
             wd.find_element_by_name(select_name).click()
             Select(wd.find_element_by_name(select_name)).select_by_visible_text(select_value)
             wd.find_element_by_xpath("//option[@value='" + select_value + "']").click()
+
+    def fill_reauth_form(self):
+        wd = self.wd
+        if len(wd.find_elements_by_name("reauth_form")) > 0:
+            wd.find_element_by_name("password").clear()
+            wd.find_element_by_name("password").send_keys(self.pwd)
+            wd.find_element_by_xpath("//input[@value='Login']").click()

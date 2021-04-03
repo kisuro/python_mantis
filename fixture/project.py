@@ -9,15 +9,8 @@ class ProjectHelper:
         wd = self.app.wd
         if not (self.is_manage_project_page()):
             wd.find_element_by_link_text("Manage").click()
-            self.fill_reauth_form()
+            self.app.fill_reauth_form()
             wd.find_element_by_link_text("Manage Projects").click()
-
-    def fill_reauth_form(self):
-        wd = self.app.wd
-        if len(wd.find_elements_by_name("reauth_form")) > 0:
-            wd.find_element_by_name("password").clear()
-            wd.find_element_by_name("password").send_keys("root")
-            wd.find_element_by_xpath("//input[@value='Login']").click()
 
     def is_manage_project_page(self):
         wd = self.app.wd
@@ -53,7 +46,7 @@ class ProjectHelper:
         wd = self.app.wd
         self.open_manage_projects_page()
         wd.find_element_by_xpath("//input[@value='Create New Project']").click()
-        self.fill_reauth_form()
+        self.app.fill_reauth_form()
         self.fill_project_data(project)
         wd.find_element_by_xpath("//input[@value='Add Project']").click()
         self.project_cache = None
@@ -63,12 +56,12 @@ class ProjectHelper:
         self.app.change_field_value("description", project.description)
         self.app.select_value_in_dropdown("status", project.status)
         self.app.select_value_in_dropdown("view_state", project.view_status)
-        # можно также заполнять/менять статус и тд из выпадающих, все по аналогии...
 
     def amount(self):
         wd = self.app.wd
         self.open_manage_projects_page()
         return int(len(wd.find_elements_by_xpath("//a[contains(@href,'?project_id=')]//ancestor::tr")))
+
     project_cache = None
 
     def delete_project_by_id(self, id):
@@ -92,9 +85,9 @@ class ProjectHelper:
     def select_project_by_name(self, name):
         wd = self.app.wd
         wd.find_element_by_xpath("//a[text()='" + name + "']").click()
-        self.fill_reauth_form()
+        self.app.fill_reauth_form()
 
     def select_project_by_id(self, id):
         wd = self.app.wd
         wd.find_element_by_xpath("//a[contains(@href,'?project_id=" + id + "')]").click()
-        self.fill_reauth_form()
+        self.app.fill_reauth_form()
