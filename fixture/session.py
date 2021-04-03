@@ -7,10 +7,8 @@ class SessionHelper:
     def login(self, username, pwd):
         wd = self.app.wd
         self.app.open_home_page()
-        wd.find_element_by_name("username").clear()
-        wd.find_element_by_name("username").send_keys(username)
-        wd.find_element_by_name("password").clear()
-        wd.find_element_by_name("password").send_keys(pwd)
+        self.app.change_field_value("username", username)
+        self.app.change_field_value("password", pwd)
         wd.find_element_by_xpath("//input[@value='Login']").click()
 
     def logout(self):
@@ -25,8 +23,6 @@ class SessionHelper:
         wd = self.app.wd
         if wd.current_url == 'about:blank':
             return False
-
-        # return len(wd.find_elements_by_name("logout")) > 0
         return len(wd.find_elements_by_link_text("Logout")) > 0
 
     def ensure_login(self, username, pwd):

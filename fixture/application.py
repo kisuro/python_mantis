@@ -3,6 +3,7 @@
 from selenium import webdriver
 from selenium.webdriver.support.select import Select
 
+from fixture.project import ProjectHelper
 from fixture.session import SessionHelper
 # from fixture.group import GroupHelper
 # from fixture.contact import ContactHelper
@@ -25,8 +26,7 @@ class Application:
         # self.wd.implicitly_wait(20)
         # init our helpers
         self.session = SessionHelper(self)
-        # self.group = GroupHelper(self)
-        # self.contact = ContactHelper(self)
+        self.project = ProjectHelper(self)
         self.base_url = base_url
 
     def destroy(self):
