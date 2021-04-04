@@ -1,12 +1,14 @@
 
 from selenium import webdriver
 from selenium.webdriver.support.select import Select
+
+from fixture.james import JamesHelper
 from fixture.project import ProjectHelper
 from fixture.session import SessionHelper
 
 
 class Application:
-    def __init__(self, browser, base_url, pwd):
+    def __init__(self, browser, config):
         if browser == "firefox":
             self.wd = webdriver.Firefox(executable_path='C:/webdrivers/ffdriver/geckodriver.exe')
         elif browser == "chrome":
@@ -20,8 +22,10 @@ class Application:
 
         self.session = SessionHelper(self)
         self.project = ProjectHelper(self)
-        self.base_url = base_url
-        self.pwd = pwd
+        self.james = JamesHelper(self)
+        self.config = config
+        self.base_url = config['web']['baseUrl']
+        self.pwd = config['webadmin']['password']
 
     def destroy(self):
         self.wd.quit()

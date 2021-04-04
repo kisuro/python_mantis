@@ -5,47 +5,62 @@ import os.path
 import jsonpickle
 import pytest
 from fixture.application import Application
-# import jsonpickle
-# import random
-# from fixture.db import DbFixture
-#
-# # define default value for variables
-# from fixture.orm import ORMFixture
+import ftputil
 
 fixture = None
 target = None
 
 
-# будет определять какой блок данных мы берем из target.json (web/db)
 def load_config(file):
     global target
-    # check if data from target.json not loaded - load it
     if target is None:
-        # find path to file and join with filename (from option "target")
         config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), file)
-        # open file only while load, then autoClose
         with open(config_file) as f:
             target = json.load(f)
     return target
 
 
+@pytest.fixture(scope="session")
+def config(request):
+    return load_config(request.config.getoption("--target"))
+
+
 @pytest.fixture
-def app(request):
-    # define variables as global
+def app(request, config):
     global fixture
-    # get browser data as option (defined in run configuration "additional parameters", eg:--browser=chrome.
-    # default=firefox)
     browser = request.config.getoption("--browser")
-    # указываем что берем из target.json данные web блока
-    web_config = load_config(request.config.getoption("--target"))['web']
-    web_user = load_config(request.config.getoption("--target"))['webadmin']
-    # check if fixture not loaded - load it
+    web_user = config['webadmin']
     if fixture is None or not fixture.is_valid():
-        # load base url from target.json(web block)
-        fixture = Application(browser=browser, base_url=web_config['baseUrl'], pwd=web_user['password'])
-    # load user/password from target.json(web block)
+        fixture = Application(browser=browser, config=config)
     fixture.session.ensure_login(username=web_user['user'], pwd=web_user['password'])
     return fixture
+
+
+@pytest.fixture(scope="session", autouse=True)
+def configure_server(request, config):
+    install_server_configuration(config['ftp']['host'], config['ftp']['username'], config['ftp']['password'])
+
+    def fin():
+        restore_server_configuration(config['ftp']['host'], config['ftp']['username'], config['ftp']['password'])
+
+    request.addfinalizer(fin)
+
+
+def install_server_configuration(host, username, password):
+    with ftputil.FTPHost(host, username, password) as remote:
+        if remote.path.isfile("config_inc.php.bak"):
+            remote.remove("config_inc.php.bak")
+        if remote.path.isfile("config_inc.php"):
+            remote.rename("config_inc.php", "config_inc.php.bak")
+        remote.upload(os.path.join(os.path.dirname(__file__), "resources/config_inc.php"), "config_inc.php")
+
+
+def restore_server_configuration(host, username, password):
+    with ftputil.FTPHost(host, username, password) as remote:
+        if remote.path.isfile("config_inc.php.bak"):
+            if remote.path.isfile("config_inc.php"):
+                remote.remove("config_inc.php")
+            remote.rename("config_inc.php.bak", "config_inc.php")
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -75,7 +90,7 @@ def pytest_generate_tests(metafunc):
             testdata = load_from_json(fixture[5:])
             metafunc.parametrize(fixture, testdata, ids=[str(x) for x in testdata])
 
-#
+
 def load_from_module(module):
     return importlib.import_module("data.%s" % module).testdata
 
@@ -83,4 +98,3 @@ def load_from_module(module):
 def load_from_json(file):
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data/%s.json" % file)) as f:
         return jsonpickle.decode(f.read())
-
