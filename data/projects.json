@@ -1,0 +1,47 @@
+[
+  {
+    "py/object": "model.project.Project",
+    "id": null,
+    "name": "projectnamepZ2~BU",
+    "status": "development",
+    "enabled": null,
+    "view_status": "private",
+    "description": "desc]Wfv!=T"
+  },
+  {
+    "py/object": "model.project.Project",
+    "id": null,
+    "name": "projectnamelTkd=[D_0",
+    "status": "obsolete",
+    "enabled": null,
+    "view_status": "public",
+    "description": "descA2Lmv>XWV/L9!)^HKY]@h,"
+  },
+  {
+    "py/object": "model.project.Project",
+    "id": null,
+    "name": "projectnameZfaI|tdi",
+    "status": "release",
+    "enabled": null,
+    "view_status": "private",
+    "description": "desceP7?KiDgGin"
+  },
+  {
+    "py/object": "model.project.Project",
+    "id": null,
+    "name": "projectnameIfNUyp",
+    "status": "development",
+    "enabled": null,
+    "view_status": "public",
+    "description": "desc(OW[dKwTd?9Y"
+  },
+  {
+    "py/object": "model.project.Project",
+    "id": null,
+    "name": "projectname0Q",
+    "status": "stable",
+    "enabled": null,
+    "view_status": "private",
+    "description": "descrs{km\"cxJ>uK"
+  }
+]

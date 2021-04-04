@@ -1,4 +1,3 @@
-# main fixture class (init driver/helpers)
 
 from selenium import webdriver
 from selenium.webdriver.support.select import Select
