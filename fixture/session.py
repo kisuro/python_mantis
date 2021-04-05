@@ -2,12 +2,11 @@ class SessionHelper:
     def __init__(self, app):
         self.app = app
 
-    def login(self):
-        session_config = self.app.config['webadmin']
+    def login(self, username, pwd):
         wd = self.app.wd
         self.app.open_home_page()
-        self.app.change_field_value("username", session_config['user'])
-        self.app.change_field_value("password", session_config['password'])
+        self.app.change_field_value("username", username)
+        self.app.change_field_value("password", pwd)
         wd.find_element_by_xpath("//input[@value='Login']").click()
 
     def logout(self):
@@ -24,18 +23,18 @@ class SessionHelper:
             return False
         return len(wd.find_elements_by_link_text("Logout")) > 0
 
-    def ensure_login(self):
+    def ensure_login(self, username, pwd):
         if self.is_logged_in():
-            if self.is_logged_in_as():
+            if self.is_logged_in_as(username):
                 return
             else:
                 self.logout()
-        self.login()
+        self.login(username, pwd)
 
-    def is_logged_in_as(self):
-        session_config = self.app.config['webadmin']
-        return self.get_logged_user() == session_config['user']
+    def is_logged_in_as(self, username):
+        return self.get_logged_user() == username
 
     def get_logged_user(self):
         wd = self.app.wd
         return wd.find_element_by_css_selector("td.login-info-left span").text
+
