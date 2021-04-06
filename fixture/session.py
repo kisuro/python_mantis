@@ -5,6 +5,8 @@ class SessionHelper:
     def login(self, username, pwd):
         wd = self.app.wd
         self.app.open_home_page()
+        if self.is_logged_in():
+            self.logout()
         self.app.change_field_value("username", username)
         self.app.change_field_value("password", pwd)
         wd.find_element_by_xpath("//input[@value='Login']").click()

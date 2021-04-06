@@ -7,6 +7,7 @@ from fixture.mail import MailHelper
 from fixture.project import ProjectHelper
 from fixture.session import SessionHelper
 from fixture.signup import SignupHelper
+from fixture.soap import SoapHelper
 
 
 class Application:
@@ -22,13 +23,14 @@ class Application:
         else:
             raise ValueError("Unrecognized browser %s", browser)
 
-        self.wd.implicitly_wait(25)
+        # self.wd.implicitly_wait(25)
 
         self.session = SessionHelper(self)
         self.project = ProjectHelper(self)
         self.james = JamesHelper(self)
         self.signup = SignupHelper(self)
         self.mail = MailHelper(self)
+        self.soap = SoapHelper(self)
         self.config = config
         self.base_url = config['web']['baseUrl']
         self.pwd = config['webadmin']['password']
